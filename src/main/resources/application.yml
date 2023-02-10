@@ -1,0 +1,33 @@
+spring:
+  profiles:
+    active: local
+
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/callbuslab
+    username: root
+    password: root
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+    database-platform: org.hibernate.dialect.MySQL5Dialect
+
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+
+server:
+  servlet:
+    encoding:
+      force-response: true
+
+jwt:
+   key: 12345678901234567890123456789012
+
+---
+# 로컬, 개발, 배포 상황별 설정
+---
