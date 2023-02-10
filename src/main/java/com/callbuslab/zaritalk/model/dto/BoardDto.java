@@ -1,6 +1,5 @@
 package com.callbuslab.zaritalk.model.dto;
 
-import com.callbuslab.zaritalk.model.entity.User;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +13,7 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 
-public class Board {
+public class BoardDto {
 
     @Data
     @Builder
@@ -36,7 +35,7 @@ public class Board {
 
         @ApiModelProperty(value = "작성자", required = true, example = "REALTOR1")
         @NotEmpty
-        private User writer;
+        private String writer;
 
         @CreatedDate
         @Column(updatable = false)

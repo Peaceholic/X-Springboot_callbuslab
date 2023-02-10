@@ -3,16 +3,13 @@ package com.callbuslab.zaritalk.model.serviceImpl.v1;
 import com.callbuslab.zaritalk.base.service.BaseService;
 import com.callbuslab.zaritalk.common.HttpHeader;
 import com.callbuslab.zaritalk.common.Pagination;
-import com.callbuslab.zaritalk.model.dto.request.UserRequest;
-import com.callbuslab.zaritalk.model.dto.response.UserResponse;
-import com.callbuslab.zaritalk.model.entity.User;
-import com.callbuslab.zaritalk.model.repository.UserRepository;
-
+import com.callbuslab.zaritalk.model.dto.BoardDto;
+import com.callbuslab.zaritalk.model.entity.Board;
+import com.callbuslab.zaritalk.model.repository.BoardRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,92 +17,75 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class UserService extends BaseService<UserRequest.Base, UserResponse.Base, User> {
+public class BoardService extends BaseService<BoardDto.Base, BoardDto.Base, Board> {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final BoardRepository boardRepository;
 
     @Override
     @Deprecated
-    public HttpHeader<UserResponse.Base> create(UserRequest.Base request) {
-        if (userRepository.existsByAccountId(request.getAccountId())) {
-            throw new RuntimeException("[Exception] Already Existed User");
-        }
-        // 1. requestDto -> User
-        User user = new User().dtoToEntityAndPwdEncoder(request, passwordEncoder);
-
-        // 2. User 생성
-        User newUser = baseRepository.save(user);
-
-        // 3. 생성된 데이터 -> UserApiResponse return
-        return HttpHeader.OK(User.response(newUser));
+    public HttpHeader<BoardDto.Base> create(BoardDto.Base request) {
+        Board board = new Board().dtoToEntity(request);
+        Board newBoard = baseRepository.save(board);
+        return null;
     }
 
     @Override
-    public HttpHeader<UserResponse.Base> read(Long id) {
+    public HttpHeader<BoardDto.Base> read(Long id) {
         //id -> repository getOne, getById
-        Optional<User> optional = baseRepository.findById(id);
+        Optional<Board> optional = baseRepository.findById(id);
 
         return optional
-                .map(User::response)
+                .map(Board::response)
                 .map(HttpHeader::OK).orElseGet(() -> {
                     return HttpHeader.ERROR("[Error] No Data");
                 });
     }
 
     @Override
-    public HttpHeader<UserResponse.Base> update(UserRequest.Base request) {
-        // 1. data
-        UserRequest.Base userRequest = request;
+    public HttpHeader<BoardDto.Base> update(BoardDto.Base request) {
+        BoardDto.Base boardRequest = request;
 
-        // 2. id -> user 데이터를 찾고
-        Optional<User> optional = baseRepository.findById(userRequest.getId());
+        Optional<Board> optional = baseRepository.findById(boardRequest.getId());
 
-        // 3. 데이터 수정
-        return optional.map(user -> {
-                    user.setNickname(userRequest.getNickname())
-                            .setAccountType(userRequest.getAccountType())
-                            .setAccountId(userRequest.getAccountId())
-                            .setName(userRequest.getNickname())
-                            .setPhoneNumber(userRequest.getPhoneNumber())
-                            .setEmail(userRequest.getEmail())
-                            .setRegisteredAt(userRequest.getRegisteredAt())
-                            .setUnregisteredAt(userRequest.getUnregisteredAt());
-                    return user;
+        return optional.map(board -> {
+                    board.setTitle(boardRequest.getTitle())
+                            .setContent(boardRequest.getContent())
+                            .setWriter(boardRequest.getWriter());
+                    return board;
                 })
-                .map(user -> baseRepository.save(user))
-                .map(User::response)
+                .map(board -> baseRepository.save(board))
+                .map(Board::response)
                 .map(HttpHeader::OK)
                 .orElseGet(() -> HttpHeader.ERROR("[Error] No Data"));
     }
 
     @Override
     public HttpHeader delete(Long id) {
-        // 1. id -> repository -> user
-        Optional<User> optional = baseRepository.findById(id);
+
+        Optional<Board> optional = baseRepository.findById(id);
 
         // 2. repository -> delete
-        return optional.map(user -> {
-                    baseRepository.delete(user);
+        return optional.map(Board -> {
+                    baseRepository.delete(Board);
                     return HttpHeader.OK();
                 })
                 .orElseGet(() -> HttpHeader.ERROR("[Error] No Data"));
     }
 
     @Override
-    public HttpHeader<List<UserResponse.Base>> search(Pageable pageable) {
-        Page<User> users = baseRepository.findAll(pageable);
-        List<UserResponse.Base> userResponseList = users.stream()
-                .map(User::response)
+    public HttpHeader<List<BoardDto.Base>> search(Pageable pageable) {
+        Page<Board> boards = baseRepository.findAll(pageable);
+        List<BoardDto.Base> boardResponseList = boards.stream()
+                .map(Board::response)
                 .collect(Collectors.toList());
 
         Pagination pagination = Pagination.builder()
-                .totalPages(users.getTotalPages())
-                .totalElements(users.getTotalElements())
-                .currentPage(users.getNumber())
-                .currentElements(users.getNumberOfElements())
+                .totalPages(boards.getTotalPages())
+                .totalElements(boards.getTotalElements())
+                .currentPage(boards.getNumber())
+                .currentElements(boards.getNumberOfElements())
                 .build();
 
-        return HttpHeader.OK(userResponseList, pagination);
+        return HttpHeader.OK(boardResponseList, pagination);
     }
 }

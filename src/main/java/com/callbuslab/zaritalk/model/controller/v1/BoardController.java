@@ -1,42 +1,19 @@
 package com.callbuslab.zaritalk.model.controller.v1;
 
-import com.callbuslab.zaritalk.common.HttpHeader;
-import com.callbuslab.zaritalk.model.dto.request.TokenRequest;
-import com.callbuslab.zaritalk.model.dto.request.UserRequest;
-import com.callbuslab.zaritalk.model.dto.response.TokenResponse;
-import com.callbuslab.zaritalk.model.dto.response.UserResponse;
-import com.callbuslab.zaritalk.model.serviceImpl.v1.AuthService;
+import com.callbuslab.zaritalk.base.controller.BaseController;
+import com.callbuslab.zaritalk.model.dto.BoardDto;
+import com.callbuslab.zaritalk.model.entity.Board;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
-@Api(tags = {"2. 인증"})
+@Api(tags = {"3. 게시판 [Table -  board]"})
+@Slf4j
 @RestController
-@RequestMapping("/auth")
-@RequiredArgsConstructor
-public class AuthController {
-    private final AuthService authService;
+@RequestMapping("/v1/api/board")
 
-    @ApiOperation(value = "회원가입")
-    @PostMapping("/signup")
-    public HttpHeader<UserResponse.Base> signup(@RequestBody UserRequest.Base request) {
-        return authService.signup(request);
-    }
+public class BoardController extends BaseController<BoardDto.Base, BoardDto.Base, Board> {
 
-    @ApiOperation(value = "로그인 & 토큰 생성")
-    @PostMapping("/login")
-    public HttpHeader<TokenResponse> login(@RequestBody UserRequest.Auth request) {
-        return authService.login(request);
-    }
-
-    @ApiOperation(value = "재발행 시간을 통한 토큰 재생성")
-    @PostMapping("/reissue")
-    public HttpHeader<TokenResponse> reissue(@RequestBody TokenRequest request) {
-        return authService.reissue(request);
-    }
 }

@@ -1,19 +1,17 @@
 package com.callbuslab.zaritalk.model.dto;
 
+import com.callbuslab.zaritalk.model.entity.Board;
+import com.callbuslab.zaritalk.model.entity.User;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
-import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
-import java.time.LocalDateTime;
 
-public class BoardDto {
+public class LikeDto {
 
     @Data
     @Builder
@@ -25,24 +23,13 @@ public class BoardDto {
         @Id
         private Long id;
 
-        @ApiModelProperty(value = "제목", required = true, example = "제목 test")
+        @ApiModelProperty(value = "User", required = true, example = "Lessor1")
         @NotEmpty
-        private String title;
+        private User user;
 
-        @ApiModelProperty(value = "본문내용", required = true, example = "내용 test")
+        @ApiModelProperty(value = "게시글", required = true, example = "1")
         @NotEmpty
-        private String content;
-
-        @ApiModelProperty(value = "작성자", required = true, example = "REALTOR1")
-        @NotEmpty
-        private String writer;
-
-        @CreatedDate
-        @Column(updatable = false)
-        private LocalDateTime createDate;
-
-        @LastModifiedDate
-        private LocalDateTime lastModifiedDate;
+        private Board board;
 
     }
 }

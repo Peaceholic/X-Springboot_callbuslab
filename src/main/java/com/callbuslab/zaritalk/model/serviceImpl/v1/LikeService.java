@@ -3,9 +3,9 @@ package com.callbuslab.zaritalk.model.serviceImpl.v1;
 import com.callbuslab.zaritalk.base.service.BaseService;
 import com.callbuslab.zaritalk.common.HttpHeader;
 import com.callbuslab.zaritalk.common.Pagination;
-import com.callbuslab.zaritalk.model.dto.BoardDto;
-import com.callbuslab.zaritalk.model.entity.Board;
-import com.callbuslab.zaritalk.model.repository.BoardRepository;
+import com.callbuslab.zaritalk.model.dto.LikeDto;
+import com.callbuslab.zaritalk.model.entity.Like;
+import com.callbuslab.zaritalk.model.repository.LikeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,44 +17,43 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class BoardService extends BaseService<BoardDto.Base, BoardDto.Base, Board> {
+public class LikeService extends BaseService<LikeDto.Base, LikeDto.Base, Like> {
 
-    private final BoardRepository boardRepository;
+    private final LikeRepository likeRepository;
 
     @Override
     @Deprecated
-    public HttpHeader<BoardDto.Base> create(BoardDto.Base request) {
-        Board board = new Board().dtoToEntity(request);
-        Board newBoard = baseRepository.save(board);
+    public HttpHeader<LikeDto.Base> create(LikeDto.Base request) {
+        Like like = new Like().dtoToEntity(request);
+        Like newLike = baseRepository.save(like);
         return null;
     }
 
     @Override
-    public HttpHeader<BoardDto.Base> read(Long id) {
+    public HttpHeader<LikeDto.Base> read(Long id) {
         //id -> repository getOne, getById
-        Optional<Board> optional = baseRepository.findById(id);
+        Optional<Like> optional = baseRepository.findById(id);
 
         return optional
-                .map(Board::response)
+                .map(Like::response)
                 .map(HttpHeader::OK).orElseGet(() -> {
                     return HttpHeader.ERROR("[Error] No Data");
                 });
     }
 
     @Override
-    public HttpHeader<BoardDto.Base> update(BoardDto.Base request) {
-        BoardDto.Base boardRequest = request;
+    public HttpHeader<LikeDto.Base> update(LikeDto.Base request) {
+        LikeDto.Base likeRequest = request;
 
-        Optional<Board> optional = baseRepository.findById(boardRequest.getId());
+        Optional<Like> optional = baseRepository.findById(likeRequest.getId());
 
-        return optional.map(board -> {
-                    board.setTitle(boardRequest.getTitle())
-                            .setContent(boardRequest.getContent())
-                            .setWriter(boardRequest.getWriter());
-                    return board;
+        return optional.map(like -> {
+                    like.setUser(likeRequest.getUser())
+                            .setBoard(likeRequest.getBoard());
+                    return like;
                 })
-                .map(board -> baseRepository.save(board))
-                .map(Board::response)
+                .map(like -> baseRepository.save(like))
+                .map(Like::response)
                 .map(HttpHeader::OK)
                 .orElseGet(() -> HttpHeader.ERROR("[Error] No Data"));
     }
@@ -62,30 +61,30 @@ public class BoardService extends BaseService<BoardDto.Base, BoardDto.Base, Boar
     @Override
     public HttpHeader delete(Long id) {
 
-        Optional<Board> optional = baseRepository.findById(id);
+        Optional<Like> optional = baseRepository.findById(id);
 
         // 2. repository -> delete
-        return optional.map(Board -> {
-                    baseRepository.delete(Board);
+        return optional.map(Like -> {
+                    baseRepository.delete(Like);
                     return HttpHeader.OK();
                 })
                 .orElseGet(() -> HttpHeader.ERROR("[Error] No Data"));
     }
 
     @Override
-    public HttpHeader<List<BoardDto.Base>> search(Pageable pageable) {
-        Page<Board> boards = baseRepository.findAll(pageable);
-        List<BoardDto.Base> boardResponseList = boards.stream()
-                .map(Board::response)
+    public HttpHeader<List<LikeDto.Base>> search(Pageable pageable) {
+        Page<Like> likes = baseRepository.findAll(pageable);
+        List<LikeDto.Base> likeResponseList = likes.stream()
+                .map(Like::response)
                 .collect(Collectors.toList());
 
         Pagination pagination = Pagination.builder()
-                .totalPages(boards.getTotalPages())
-                .totalElements(boards.getTotalElements())
-                .currentPage(boards.getNumber())
-                .currentElements(boards.getNumberOfElements())
+                .totalPages(likes.getTotalPages())
+                .totalElements(likes.getTotalElements())
+                .currentPage(likes.getNumber())
+                .currentElements(likes.getNumberOfElements())
                 .build();
 
-        return HttpHeader.OK(boardResponseList, pagination);
+        return HttpHeader.OK(likeResponseList, pagination);
     }
 }
