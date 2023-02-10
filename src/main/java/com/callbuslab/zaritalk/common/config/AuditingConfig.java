@@ -24,7 +24,7 @@ public class AuditingConfig {
         public Optional<String> getCurrentAuditor() {
             if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof User) {
                 User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal(); //토큰에 User 객체 반환
-                return Optional.of(user.getAccount());
+                return Optional.of(user.getAccountId());
             } else {
                 return Optional.empty();
             }

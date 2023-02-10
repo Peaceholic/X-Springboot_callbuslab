@@ -1,7 +1,7 @@
 package com.callbuslab.zaritalk.model.dto.response;
 
-import com.callbuslab.zaritalk.model.enums.Authority;
-import com.callbuslab.zaritalk.model.enums.UserStatus;
+import com.callbuslab.zaritalk.model.enums.AccountType;
+import com.callbuslab.zaritalk.model.enums.Quit;
 
 import org.springframework.format.annotation.NumberFormat;
 import io.swagger.annotations.ApiModelProperty;
@@ -28,33 +28,37 @@ public class UserResponse {
         @Id
         private Long id;
 
-        @ApiModelProperty(value = "로그인 아이디", required = true, example = "test")
+        @ApiModelProperty(value = "별명", required = true, example = "test")
         @NotEmpty
-        private String account;
+        private String nickname;
 
-        @ApiModelProperty(value = "비밀번호", required = true, example = "1111")
+        @ApiModelProperty(value = "계정유형", required = true, example = "REALTOR")
+        @NotEmpty
+        private AccountType accountType;
+
+        @ApiModelProperty(value = "ID", required = true, example = "REALTOR1")
+        @NotEmpty
+        private String accountId;
+
+        @ApiModelProperty(value = "비밀번호", required = true, example = "1234")
         @NotEmpty
         private String password;
 
         @ApiModelProperty(value = "등록상태", required = true, example = "REGISTERED")
         @NotEmpty
-        private UserStatus status;
-
-        @ApiModelProperty(value = "권한", required = true, example = "ROLE_USER")
-        @NotEmpty
-        private Authority authority;
+        private Quit quit;
 
         @ApiModelProperty(value = "이름", required = true, example = "홍길동")
         @NotEmpty
         private String name;
 
-        @ApiModelProperty(value = "이메일", example = "test@gmail.com")
-        @Email
-        private String email;
-
         @ApiModelProperty(value = "전화번호", example = "01011112222")
         @NumberFormat
         private String phoneNumber;
+
+        @ApiModelProperty(value = "이메일", example = "test@gmail.com")
+        @Email
+        private String email;
 
         @ApiModelProperty(value = "사용일", hidden = true)
         private LocalDateTime registeredAt;

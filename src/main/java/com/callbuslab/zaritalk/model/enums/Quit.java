@@ -5,10 +5,10 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum UserStatus {
+public enum Quit {
 
-    REGISTERED(0, "등록", "사용자 등록 상태")
-    , UNREGISTERED(1, "해제", "사용자 해제 상태")
+    REGISTERED(0, "등록", "사용자 등록상태")
+    , UNREGISTERED(1, "해제", "사용자 해제상태")
     ;
 
     private Integer id;

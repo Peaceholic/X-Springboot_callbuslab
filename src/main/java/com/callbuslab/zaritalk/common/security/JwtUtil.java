@@ -38,7 +38,7 @@ public class JwtUtil {
 
         JwtBuilder builder = Jwts.builder()
                 .setSubject(user.getId().toString())                // payload "sub": "name"
-                .claim(AUTHORITIES_KEY, user.getAuthority())        // payload "auth": "ROLE_USER"
+                .claim(AUTHORITIES_KEY, user.getAccountType())      // payload "auth": "REALTOR"
                 .claim("user", user); //계정
         return builder
                 .setIssuedAt(now)
@@ -69,7 +69,7 @@ public class JwtUtil {
         Date accessTokenExpiresIn = new Date(now + TOKEN_VALID_TIME);
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())       // payload "sub": "name"
-                .claim(AUTHORITIES_KEY, authorities)        // payload "auth": "ROLE_USER"
+                .claim(AUTHORITIES_KEY, authorities)        // payload "auth": "REALTOR"
                 .setExpiration(accessTokenExpiresIn)        // payload "exp": 1516239022 (예시)
                 .signWith(key, SignatureAlgorithm.HS256)    // header "alg": "HS512"
                 .compact();
@@ -91,10 +91,6 @@ public class JwtUtil {
     public Authentication getAuthentication(String accessToken) {
         // 토큰 복호화
         Claims claims = getClaims(accessToken);
-
-//        if (claims.get(AUTHORITIES_KEY) == null) {
-//            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
-//        }
 
         // 클레임에서 권한 정보 가져오기
         Collection<? extends GrantedAuthority> authorities =

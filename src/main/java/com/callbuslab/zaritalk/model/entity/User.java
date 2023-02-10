@@ -1,11 +1,11 @@
 package com.callbuslab.zaritalk.model.entity;
 
 import com.callbuslab.zaritalk.base.entity.BaseEntity;
-import com.callbuslab.zaritalk.model.enums.Authority;
-import com.callbuslab.zaritalk.model.enums.UserStatus;
 import com.callbuslab.zaritalk.model.dto.request.UserRequest;
 import com.callbuslab.zaritalk.model.dto.response.UserResponse;
 
+import com.callbuslab.zaritalk.model.enums.AccountType;
+import com.callbuslab.zaritalk.model.enums.Quit;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.GrantedAuthority;
@@ -37,15 +37,18 @@ public class User extends BaseEntity {
     private Long id;
 
     @NotBlank
-    private String account;
+    private String nickname;
+
+    @Enumerated(EnumType.STRING)
+    private AccountType accountType ;
+
+    @NotBlank
+    private String accountId;
 
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private UserStatus status;
-
-    @Enumerated(EnumType.STRING)
-    private Authority authority;
+    private Quit quit;
 
     @Size(min = 0, max = 20)
     private String name;
@@ -55,29 +58,28 @@ public class User extends BaseEntity {
 
     private String phoneNumber;
 
-    private String role;
-
     private LocalDateTime lastLoginAt;
 
     private LocalDateTime passwordUpdatedAt;
 
     private int loginFailCount;
 
-    //활성화 시간?
     private LocalDateTime registeredAt;
 
     private LocalDateTime unregisteredAt;
 
-    public static UserResponse.Base response(User user){
+    public static UserResponse.Base response(User user) {
         //user -> userApiResponse
         UserResponse.Base userApiResponse = UserResponse.Base.builder()
                 .id(user.getId())
-                .account(user.getAccount())
+                .nickname(user.getNickname())
+                .accountType(user.getAccountType())
+                .accountId(user.getAccountId())
                 .password(user.getPassword())
+                .quit(user.getQuit())
                 .name(user.getName())
-                .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
-                .status(user.getStatus())
+                .email(user.getEmail())
                 .registeredAt(user.getRegisteredAt())
                 .unregisteredAt(user.getUnregisteredAt())
                 .build();
@@ -88,11 +90,12 @@ public class User extends BaseEntity {
 
     public User dtoToEntity(UserRequest.Base request) {
         return User.builder()
-                .account(request.getAccount())
+                .nickname(request.getNickname())
+                .accountType(request.getAccountType())
+                .accountId(request.getAccountId())
                 .password(request.getPassword())
+                .quit(request.getQuit())
                 .name(request.getName())
-                .status(request.getStatus())
-                .authority(request.getAuthority())
                 .phoneNumber(request.getPhoneNumber())
                 .email(request.getEmail())
                 .registeredAt(LocalDateTime.now())
@@ -107,7 +110,7 @@ public class User extends BaseEntity {
     }
 
     public UsernamePasswordAuthenticationToken toAuthentication() {
-        GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(authority.toString());
+        GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(accountType.toString());
 
         return new UsernamePasswordAuthenticationToken(email, password, Collections.singleton(grantedAuthority));
     }

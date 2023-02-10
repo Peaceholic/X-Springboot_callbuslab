@@ -28,7 +28,7 @@ public class UserService extends BaseService<UserRequest.Base, UserResponse.Base
     @Override
     @Deprecated
     public HttpHeader<UserResponse.Base> create(UserRequest.Base request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
+        if (userRepository.existsByAccountId(request.getAccountId())) {
             throw new RuntimeException("[Exception] Already Existed User");
         }
         // 1. requestDto -> User
@@ -63,9 +63,10 @@ public class UserService extends BaseService<UserRequest.Base, UserResponse.Base
 
         // 3. 데이터 수정
         return optional.map(user -> {
-                    user.setAccount(userRequest.getAccount())
-                            .setPassword(userRequest.getPassword())
-                            .setStatus(userRequest.getStatus())
+                    user.setNickname(userRequest.getNickname())
+                            .setAccountType(userRequest.getAccountType())
+                            .setAccountId(userRequest.getAccountId())
+                            .setName(userRequest.getNickname())
                             .setPhoneNumber(userRequest.getPhoneNumber())
                             .setEmail(userRequest.getEmail())
                             .setRegisteredAt(userRequest.getRegisteredAt())

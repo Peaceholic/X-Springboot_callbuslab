@@ -54,7 +54,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
         return new ApiInfoBuilder()
                 .title("Callbuslab Zaritalk API")
                 .description("API 상세소개 및 사용법 등")
-                .contact(new Contact("최인규", "https://github.com/Peaceholic/CallbusLab-Zaritalk-API-InkyooChoi", "skyinsnick@hotmail.com"))
+                .contact(new Contact("최인규", "https://github.com/Peaceholic/CallbusLab-Zaritalk-API/tree/master", "skyinsnick@hotmail.com"))
                 .version("1.0")
                 .build();
     }

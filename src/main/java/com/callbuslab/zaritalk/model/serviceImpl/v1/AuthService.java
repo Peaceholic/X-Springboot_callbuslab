@@ -8,7 +8,7 @@ import com.callbuslab.zaritalk.model.dto.request.UserRequest;
 import com.callbuslab.zaritalk.model.dto.response.TokenResponse;
 import com.callbuslab.zaritalk.model.dto.response.UserResponse;
 import com.callbuslab.zaritalk.model.entity.User;
-import com.callbuslab.zaritalk.model.enums.Authority;
+import com.callbuslab.zaritalk.model.enums.AccountType;
 import com.callbuslab.zaritalk.model.repository.RefreshTokenRepository;
 import com.callbuslab.zaritalk.model.repository.UserRepository;
 
@@ -32,7 +32,7 @@ public class AuthService {
 
     @Transactional
     public HttpHeader<UserResponse.Base> signup(UserRequest.Base request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
+        if (userRepository.existsByAccountId(request.getAccountId())) {
             throw new RuntimeException("Already Existed User");
         }
         // 1. requestDto -> User
@@ -49,9 +49,9 @@ public class AuthService {
     public HttpHeader<TokenResponse> login(UserRequest.Auth userRequest) {
 
         User user = User.builder()
-                .email(userRequest.getEmail())
+                .email(userRequest.getAccountId())
                 .password(userRequest.getPassword())
-                .authority(Authority.ROLE_USER)
+                .accountType(AccountType.REALTOR)
                 .build();
 
         // 1. Login ID/PW 를 기반으로 AuthenticationToken 생성

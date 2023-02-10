@@ -5,12 +5,11 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum Authority {
+public enum AccountType {
 
-    ROLE_USER(0, "사용자")
-    , ROLE_MANAGER(1, "매니저")
-    , ROLE_ADMIN(2, "관리자")
-    , ROLE_SUPER_ADMIN(3, "슈퍼 관리자")
+    REALTOR(0, "공인중개사")
+    , LESSOR(1, "임대인")
+    , LESSEE(2, "임차인")
     ;
 
     private Integer id;

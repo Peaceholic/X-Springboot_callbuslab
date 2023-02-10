@@ -56,7 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 ).permitAll()
                 .anyRequest().authenticated()
                 .and().exceptionHandling()
-                .and().headers().frameOptions().disable() // 없으면 h2 console 안됌
+                .and().headers().frameOptions().disable()
                 .and().addFilter(filter)
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);

@@ -18,7 +18,7 @@ public class YearMonthDayValidator implements ConstraintValidator<YearMonthDay, 
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        // default: yyyyMMdd
+        // default: YYYYMMDD
         try {
             LocalDate localDate = LocalDate.parse(value, DateTimeFormatter.ofPattern(this.pattern));
         }catch (Exception e){
